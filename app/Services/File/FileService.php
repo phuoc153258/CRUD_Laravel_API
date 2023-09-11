@@ -24,12 +24,8 @@ class FileService implements FileServiceInterface
 
     public function delete($file): string
     {
-        $fileNameSplit = explode(".", $file);
-        if (in_array($fileNameSplit[1], IMAGE_EXTENSION))
-            $file = 'image/' . $file;
+        if ($file === null) return trans('message.delete-file-success');
 
-        if (in_array($fileNameSplit[1], AUDIO_EXTENSION))
-            $file = 'audio/' . $file;
         if (!File::exists($file))  abort(400, trans('message.file-not-exist'));
 
         File::delete($file);

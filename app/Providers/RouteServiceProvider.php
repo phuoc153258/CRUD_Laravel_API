@@ -39,8 +39,6 @@ class RouteServiceProvider extends ServiceProvider
             Route::prefix('api/')->group(
                 function () {
                     Route::prefix('/users')->group(base_path('routes/user.php'));
-
-                    Route::prefix('/files')->group(base_path('routes/file.php'));
                 }
             );
         });

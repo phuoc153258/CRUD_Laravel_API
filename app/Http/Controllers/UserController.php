@@ -4,23 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Services\Paginate\PaginateService;
 use App\Traits\HttpResponse;
 use App\Repositories\UserRepository\UserRepositoryInterface;
+use App\Services\File\FileService;
 
 class UserController extends Controller
 {
     use HttpResponse;
-    public PaginateService $paginateService;
+    private PaginateService $paginateService;
+    private FileService $fileService;
     private UserRepositoryInterface $userRepository;
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->paginateService = new PaginateService();
+        $this->fileService = new FileService();
         $this->userRepository = $userRepository;
     }
 
@@ -51,32 +53,27 @@ class UserController extends Controller
 
     public function create(CreateUserRequest $request)
     {
-        $user = $this->userRepository->getUserByCondition('email', $request->input('email'));
-        if (!empty($user)) return $this->error(null, trans('message.email-is-exist'), 400);
-        $user = User::create($request->validated());
+        $user = $this->userRepository->createUser($request->validated());
         return $this->success($user, trans('message.create-user-success'), 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user = $this->userRepository->getUserById($id);
-
-        if (empty($user)) return $this->error(null, trans('message.user-is-not-exist'), 400);
-
-        if (!empty($request->input('name')))
-            $user->name = $request->input('name');
-
-        if (!empty($request->input('email')))
-            $user->email = $request->input('email');
-
-        if (!empty($request->input('password')))
-            $user->password = $request->input('password');
-
-        if (!empty($request->input('avatar')))
-            $user->avatar = $request->input('avatar');
-
-        $user->save();
-        return $this->success($user, trans('message.update-user-success'), 200);
+        try {
+            $user = $this->userRepository->getUserById($id);
+            if (empty($user)) return $this->error(null, trans('message.user-is-not-exist'), 400);
+            $this->fileService->delete($user->avatar);
+            $infoUser = [
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
+                'avatar' => $this->fileService->upload($request->file('avatar'), 'avatar')
+            ];
+            $user->update($infoUser);
+            return $this->success($user, trans('message.update-user-success'), 200);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), trans('message.update-user-failed'), 400);
+        }
     }
 
     public function delete($id)

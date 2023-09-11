@@ -27,9 +27,12 @@ class UserRepository implements UserRepositoryInterface
         User::destroy($userId);
     }
 
-    public function createUser(array $orderDetails)
+    public function createUser(array $userDetails)
     {
-        return User::create($orderDetails);
+        return User::firstOrCreate(
+            ['email' => $userDetails['email']],
+            ['name' => $userDetails['name'], 'password' => $userDetails['password']]
+        );
     }
 
     public function updateUser($orderId, array $newDetails)

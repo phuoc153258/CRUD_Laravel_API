@@ -8,6 +8,7 @@ return [
     'create-user-success' => 'Create user success !!!',
     'user-is-not-exist' => 'User is not exist !!!',
     'update-user-success' => 'Update user success !!!',
+    'update-user-failed' => 'Update user failed !!!',
     'delete-user-success' => 'Delete user success !!!',
     'please-select-file' => 'Please select file !!!',
     'upload-file-success' => 'Upload file success !!!',

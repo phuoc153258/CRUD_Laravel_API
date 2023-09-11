@@ -8,6 +8,7 @@ return [
     'create-user-success' => 'Tạo mới người dùng thành công !!!',
     'user-is-not-exist' => 'Người dùng không tồn tại !!!',
     'update-user-success' => 'Cập nhật thông tin người dùng thành công !!!',
+    'update-user-failed' => 'Cập nhật thông tin người dùng thất bại !!!',
     'delete-user-success' => 'Xoá người dùng thành công !!!',
     'please-select-file' => 'Hãy chọn file !!!',
     'upload-file-success' => 'Tải file thành công !!!',

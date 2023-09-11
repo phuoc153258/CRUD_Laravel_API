@@ -10,6 +10,6 @@ Route::get('/{id}', [UserController::class, 'show']);
 
 Route::post('/', [UserController::class, 'create']);
 
-Route::put('/{id}', [UserController::class, 'update']);
+Route::post('/{id}', [UserController::class, 'update']);
 
 Route::delete('/{id}', [UserController::class, 'delete']);
